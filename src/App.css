@@ -1,0 +1,32 @@
+canvas {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+.navigation {
+    position: fixed;
+    display: flex;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.navigation__bullet {
+    width: 8px;
+    height: 8px;
+    margin: 0 5px;
+    border-radius: 50%;
+    background-color: black;
+    cursor: pointer;
+}
+
+.navigation__bullet:hover {
+    background-color: #00000050;
+}
