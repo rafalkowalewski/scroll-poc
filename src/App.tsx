@@ -9,9 +9,11 @@ const App: FC = () => {
 
     useEffect(() => {
         img.src = currentFrame(1);
-        canvas.current!.width = 1200;
-        canvas.current!.height = 720;
-        img.onload = () => draw();
+        img.onload = () => {
+            canvas.current!.width = img.width;
+            canvas.current!.height = img.height;
+            draw();
+        };
     }, [])
 
     useLayoutEffect(() => {
