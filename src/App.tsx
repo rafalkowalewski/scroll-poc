@@ -1,29 +1,32 @@
 import React, {FC, useEffect, useLayoutEffect, useRef} from 'react';
 import './App.css';
 
+const test: HTMLImageElement[] = []
+
 const App: FC = () => {
     const html = document.documentElement;
     const canvas = useRef<HTMLCanvasElement>(null)
-    const frameCount = 166;
+    const lastFrame = 336;
     const img = new Image()
 
     useEffect(() => {
-        img.src = currentFrame(1);
+        for (let i = 0; i <= lastFrame; i++) {
+            const temporaryImg = new Image();
+            temporaryImg.src = calculateCurrentFrame(i);
+            test.push(temporaryImg);
+        }
+        img.src = calculateCurrentFrameByScrollPosition();
         img.onload = () => {
             canvas.current!.width = img.width;
             canvas.current!.height = img.height;
-            draw();
+            drawImage();
         };
-    }, [])
+    }, []);
 
     useLayoutEffect(() => {
         const handleScroll = () => {
-            const scrollTop = html.scrollTop;
-            const maxScrollTop = html.scrollHeight - window.innerHeight;
-            const scrollFraction = scrollTop / maxScrollTop;
-            const frameIndex = Math.min(frameCount - 1, Math.ceil(scrollFraction * frameCount));
-            img.src = currentFrame(frameIndex + 1);
-            requestAnimationFrame(() => draw())
+            img.src = calculateCurrentFrameByScrollPosition();
+            requestAnimationFrame(() => drawImage());
         };
         window.addEventListener("scroll", handleScroll);
         handleScroll();
@@ -34,11 +37,7 @@ const App: FC = () => {
         window.scroll({top: frameIndex, behavior: 'smooth'})
     }
 
-    const currentFrame = (index: number) => {
-        return `/scroll-animation/ezgif-frame-${index.toString().padStart(3, '0')}.jpg`;
-    };
-
-    const draw = () => {
+    const drawImage = () => {
         canvas.current!.getContext("2d")!.drawImage(
             img,
             canvas.current!.width / 2 - img.width / 2,
@@ -46,13 +45,27 @@ const App: FC = () => {
         );
     }
 
+    const calculateCurrentFrame = (index: number) => {
+        return `/scroll-animation/220204_ZEISS_CataractWeb_006_${index.toString().padStart(5, '0')}.jpg`;
+    };
+
+    const calculateCurrentFrameByScrollPosition = () => {
+        const scrollTop = html.scrollTop;
+        const maxScrollTop = html.scrollHeight - window.innerHeight;
+        const scrollFraction = scrollTop / maxScrollTop;
+        const frameIndex = Math.min(lastFrame, Math.ceil(scrollFraction * lastFrame));
+        return calculateCurrentFrame(frameIndex);
+    }
+
     return (
         <div>
             <canvas ref={canvas}/>
             <div className={'navigation'}>
-                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(1504)}/>
-                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(2547)}/>
-                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(3536)}/>
+                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(700)}/>
+                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(1288)}/>
+                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(1968)}/>
+                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(2517)}/>
+                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(3525)}/>
             </div>
         </div>
     );
