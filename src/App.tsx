@@ -8,13 +8,9 @@ const App: FC = () => {
     const img = new Image()
 
     useEffect(() => {
-        for (let i = 1; i < frameCount; i++) {
-            const temporaryImg = new Image();
-            temporaryImg.src = currentFrame(i);
-        }
-        canvas.current!.width = window.innerWidth;
-        canvas.current!.height = window.innerHeight;
         img.src = currentFrame(1);
+        canvas.current!.width = 1200;
+        canvas.current!.height = 720;
         img.onload = () => draw();
     }, [])
 
