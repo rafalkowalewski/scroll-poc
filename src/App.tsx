@@ -83,7 +83,7 @@ const App: FC = () => {
                     onClick={() => handleScrollToClick(123)}
                 />
                 <span
-                    className={`navigation__bullet ${currentFrame >= 188 && currentFrame <= 240 ? 'navigation__bullet--active' : ''}`}
+                    className={`navigation__bullet ${currentFrame >= 188 && currentFrame < 240 ? 'navigation__bullet--active' : ''}`}
                     onClick={() => handleScrollToClick(188)}
                 />
                 <span
