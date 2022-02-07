@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useLayoutEffect, useRef} from 'react';
+import React, {FC, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import './App.css';
 
 const test: HTMLImageElement[] = []
@@ -6,11 +6,12 @@ const test: HTMLImageElement[] = []
 const App: FC = () => {
     const html = document.documentElement;
     const canvas = useRef<HTMLCanvasElement>(null)
-    const lastFrame = 336;
+    const [currentFrame, setCurrentFrameNumber] = useState(0);
+    const lastFrameNumber = 336;
     const img = new Image()
 
     useEffect(() => {
-        for (let i = 0; i <= lastFrame; i++) {
+        for (let i = 0; i <= lastFrameNumber; i++) {
             const temporaryImg = new Image();
             temporaryImg.src = calculateCurrentFrame(i);
             test.push(temporaryImg);
@@ -34,7 +35,8 @@ const App: FC = () => {
     }, []);
 
     const handleScrollToClick = (frameIndex: number) => {
-        window.scroll({top: frameIndex, behavior: 'smooth'})
+        const scrollTop = calculateScrollPositionByFrameNumber(frameIndex);
+        window.scroll({top: scrollTop, behavior: 'smooth'})
     }
 
     const drawImage = () => {
@@ -53,19 +55,45 @@ const App: FC = () => {
         const scrollTop = html.scrollTop;
         const maxScrollTop = html.scrollHeight - window.innerHeight;
         const scrollFraction = scrollTop / maxScrollTop;
-        const frameIndex = Math.min(lastFrame, Math.ceil(scrollFraction * lastFrame));
+        const frameIndex = Math.min(lastFrameNumber, Math.ceil(scrollFraction * lastFrameNumber));
+        setCurrentFrameNumber(frameIndex);
         return calculateCurrentFrame(frameIndex);
+    }
+
+    const calculateScrollPositionByFrameNumber = (frame: number) => {
+        const maxScrollTop = html.scrollHeight - window.innerHeight;
+        const scrollFraction = frame / lastFrameNumber;
+        return maxScrollTop * scrollFraction;
     }
 
     return (
         <div>
             <canvas ref={canvas}/>
             <div className={'navigation'}>
-                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(700)}/>
-                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(1288)}/>
-                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(1968)}/>
-                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(2517)}/>
-                <span className={'navigation__bullet'} onClick={() => handleScrollToClick(3525)}/>
+                <span
+                    className={`navigation__bullet ${currentFrame < 67 ? 'navigation__bullet--active' : ''}`}
+                    onClick={() => handleScrollToClick(0)}
+                />
+                <span
+                    className={`navigation__bullet ${currentFrame >= 67 && currentFrame < 123 ? 'navigation__bullet--active' : ''}`}
+                    onClick={() => handleScrollToClick(67)}
+                />
+                <span
+                    className={`navigation__bullet ${currentFrame >= 123 && currentFrame < 188 ? 'navigation__bullet--active' : ''}`}
+                    onClick={() => handleScrollToClick(123)}
+                />
+                <span
+                    className={`navigation__bullet ${currentFrame >= 188 && currentFrame <= 240 ? 'navigation__bullet--active' : ''}`}
+                    onClick={() => handleScrollToClick(188)}
+                />
+                <span
+                    className={`navigation__bullet ${currentFrame >= 240 && currentFrame < lastFrameNumber ? 'navigation__bullet--active' : ''}`}
+                    onClick={() => handleScrollToClick(240)}
+                />
+                <span
+                    className={`navigation__bullet ${currentFrame === lastFrameNumber ? 'navigation__bullet--active' : ''}`}
+                    onClick={() => handleScrollToClick(lastFrameNumber)}
+                />
             </div>
         </div>
     );
